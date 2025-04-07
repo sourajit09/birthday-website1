@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Love Quotes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: black;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .quote-container {
+      position: relative;
+      z-index: 1;
+      max-width: 80%;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    .quote {
+      font-size: 2.5rem;
+      color: #fff;
+      margin-bottom: 20px;
+      font-family: 'Dancing Script', cursive;
+      animation: glow 2s infinite alternate, textPop 1.5s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #ff4da6, 0 0 20px #ff4da6; }
+      to { text-shadow: 0 0 20px #ff4da6, 0 0 30px #ff4da6; }
+    }
+
+    @keyframes textPop {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .back-button {
+      margin-top: 20px;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 30px;
+      background-color: #ff4da6;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .back-button:hover {
+      background-color: #e91e63;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="fireworksCanvas"></canvas>
+
+  <div class="quote-container">
+    <div class="quote" id="quote">"You are my today and all of my tomorrows."</div>
+    <button class="back-button" onclick="window.location.href='photo.html'">⬅ Back to Photos</button>
+  </div>
+  <audio id="bgMusic" autoplay loop>
+    <source src="New folder/snowman.m4a" type="audio/mp4">
+    <source src="New folder/snowman.mp3" type="audio/mpeg">
+    <source src="New folder/snowman.ogg" type="audio/ogg">
+    
+  </audio>
+  <button onclick="document.getElementById('bgMusic').play()" style="padding: 10px 20px; font-size: 1rem; background-color: #ff4da6; color: white; border: none; border-radius: 5px; cursor: pointer;">
+    🎵 Play Music
+  </button>
+
+  <script>
+    // Firecracker animation
+    const canvas = document.getElementById("fireworksCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const fireworks = [];
+
+    function createFirework() {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height / 2;
+      const colors = ["#ff4da6", "#ff6f91", "#ff85a1", "#ff99b3", "#ffcccc"];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      fireworks.push({ x, y, radius: 2, color, alpha: 1 });
+    }
+
+    function drawFireworks() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      fireworks.forEach((firework, index) => {
+        ctx.beginPath();
+        ctx.arc(firework.x, firework.y, firework.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${hexToRgb(firework.color)}, ${firework.alpha})`;
+        ctx.fill();
+
+        firework.radius += 1;
+        firework.alpha -= 0.02;
+
+        if (firework.alpha <= 0) fireworks.splice(index, 1);
+      });
+    }
+
+    function hexToRgb(hex) {
+      const bigint = parseInt(hex.slice(1), 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return `${r}, ${g}, ${b}`;
+    }
+
+    setInterval(() => {
+      createFirework();
+      drawFireworks();
+    }, 100);
+
+    // Love quotes logic
+    const quotes = [
+      '"You are my today and all of my tomorrows."',
+      '"I love you not because of who you are, but because of who I am when I am with you."',
+      '"Every love story is beautiful, but ours is my favorite."',
+      '"You are the source of my joy, the center of my world, and the whole of my heart."',
+      '"I may not be your first date, kiss, or love, but I want to be your last everything."',
+      '"I love you more than words can show, I think about you more than you could ever know."',
+      '"You are my sun, my moon, and all of my stars."'
+    ];
+    let currentQuoteIndex = 0;
+
+    setInterval(() => {
+      const quoteElement = document.getElementById("quote");
+      currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+      quoteElement.textContent = quotes[currentQuoteIndex];
+    }, 4000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Her Special Photos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: black;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+    .photo-container {
+      position: relative;
+      z-index: 1;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(255, 105, 180, 0.5);
+      animation: pulse 2s infinite;
+    }
+    .photo-container img {
+      width: 100%;
+      height: auto;
+      display: none;
+      animation: fadeIn 2s ease-in-out;
+    }
+    .photo-container img.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 30px rgba(255, 105, 180, 0.5); }
+      50% { box-shadow: 0 0 50px rgba(255, 105, 180, 0.8); }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="heartCanvas"></canvas>
+  <canvas id="starCanvas"></canvas>
+
+  <div class="photo-container">
+    <img src="New folder/photo8.jpg" alt="Photo 8" class="active">
+    <img src="New folder/photo2.jpg" alt="Photo 2">
+    <img src="New folder/photo3.jpg" alt="Photo 3">
+    <img src="New folder/photo4.jpg" alt="Photo 4">
+    <img src="New folder/photo5.jpg" alt="Photo 5">
+    <img src="New folder/photo6.jpg" alt="Photo 6">
+    <img src="New folder/photo7.jpg" alt="Photo 7">
+    <img src="New folder/photo8.jpg" alt="Photo 8">
+    <img src="New folder/photo9.jpg" alt="Photo 9">
+    <img src="New folder/swati1.jpg" alt="swati1">
+  </div>
+  <audio id="bgMusic" autoplay loop>
+    <source src="New folder/love-songs.m4a" type="audio/mp4">
+    <source src="New folder/love-songs.mp3" type="audio/mpeg">
+    <source src="New folder/love-songs.ogg" type="audio/ogg">
+    
+  </audio>
+
+  
+  <!-- Add a button to navigate to the quotes page -->
+  <div style="position: relative; z-index: 1; margin-top: 20px;">
+    <button onclick="window.location.href='quotes.html'" style="padding: 15px 30px; font-size: 1.2rem; border: none; border-radius: 30px; background-color: #ff4da6; color: white; cursor: pointer; transition: 0.3s;">
+      💖 See Love Quotes 💖
+    </button>
+  </div>
+
+  <script>
+    // Floating hearts animation
+    const heartCanvas = document.getElementById("heartCanvas");
+    const heartCtx = heartCanvas.getContext("2d");
+    heartCanvas.width = window.innerWidth;
+    heartCanvas.height = window.innerHeight;
+
+    const hearts = [];
+    const heartColors = ["#ff4da6", "#ff6f91", "#ff85a1", "#ff99b3", "#ffcccc"];
+
+    function createHeart() {
+      const x = Math.random() * heartCanvas.width;
+      const y = heartCanvas.height + 20;
+      const size = Math.random() * 15 + 5;
+      const speed = Math.random() * 2 + 1;
+      const color = heartColors[Math.floor(Math.random() * heartColors.length)];
+      hearts.push({ x, y, size, speed, color });
+    }
+
+    function drawHearts() {
+      heartCtx.clearRect(0, 0, heartCanvas.width, heartCanvas.height);
+      hearts.forEach((heart, index) => {
+        heartCtx.fillStyle = heart.color;
+        heartCtx.beginPath();
+        heartCtx.moveTo(heart.x, heart.y);
+        heartCtx.arc(heart.x - heart.size / 2, heart.y - heart.size / 2, heart.size / 2, 0, Math.PI * 2);
+        heartCtx.arc(heart.x + heart.size / 2, heart.y - heart.size / 2, heart.size / 2, 0, Math.PI * 2);
+        heartCtx.lineTo(heart.x, heart.y + heart.size);
+        heartCtx.fill();
+
+        heart.y -= heart.speed;
+        if (heart.y < -20) hearts.splice(index, 1);
+      });
+    }
+
+    setInterval(() => {
+      createHeart();
+      drawHearts();
+    }, 50);
+
+    // Twinkling stars animation
+    const starCanvas = document.getElementById("starCanvas");
+    const starCtx = starCanvas.getContext("2d");
+    starCanvas.width = window.innerWidth;
+    starCanvas.height = window.innerHeight;
+
+    const stars = [];
+    for (let i = 0; i < 100; i++) {
+      stars.push({
+        x: Math.random() * starCanvas.width,
+        y: Math.random() * starCanvas.height,
+        radius: Math.random() * 1.5,
+        alpha: Math.random(),
+        speed: Math.random() * 0.02 + 0.01,
+      });
+    }
+
+    function drawStars() {
+      starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+      stars.forEach((star) => {
+        star.alpha += star.speed;
+        if (star.alpha <= 0 || star.alpha >= 1) star.speed *= -1;
+
+        starCtx.beginPath();
+        starCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        starCtx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+        starCtx.fill();
+      });
+    }
+
+    setInterval(drawStars, 50);
+
+    // Slideshow logic
+    const images = document.querySelectorAll(".photo-container img");
+    let currentIndex = 0;
+
+    setInterval(() => {
+      images[currentIndex].classList.remove("active");
+      currentIndex = (currentIndex + 1) % images.length;
+      images[currentIndex].classList.add("active");
+    }, 3000);
+  </script>
+</body>
+</html>

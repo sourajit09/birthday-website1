@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Happy Birthday My Love</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body {
+      background: black;
+      overflow: hidden;
+      color: white;
+      text-align: center;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+    .content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 20px;
+    }
+    .slideshow {
+      width: 300px;
+      height: 400px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(255, 105, 180, 0.5);
+      margin-bottom: 20px;
+      animation: zoomIn 2s ease-in-out;
+    }
+    .slideshow img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      animation: fadeIn 3s infinite;
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      50% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    @keyframes zoomIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    h1 {
+      color: #ff4da6;
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      animation: glow 2s infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #ff4da6, 0 0 20px #ff4da6; }
+      to { text-shadow: 0 0 20px #ff4da6, 0 0 30px #ff4da6; }
+    }
+    p {
+      color: #ccc;
+      max-width: 90%;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+    .button {
+      background-color: #ff4da6;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.3s;
+      z-index: 1;
+    }
+    .button:hover {
+      background-color: #e91e63;
+      transform: scale(1.05);
+    }
+    audio { display: none; }
+
+    /* Cake animation */
+    .cake {
+      width: 200px;
+      height: 200px;
+      background: url('cake.png') no-repeat center/cover;
+      margin: 20px auto;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="heartCanvas"></canvas>
+
+  <div class="content">
+    <div class="slideshow">
+      <img id="slide" src="New folder/swati1.jpg" alt="My Love">
+    </div>
+
+    <h1>Happy Birthday, My Queen 👑</h1>
+    <p>You light up my world. Click below to cut the cake 🎂</p>
+
+    <div class="cake" id="cake"></div>
+
+    <button class="button" onclick="cutCake()">🎂 Cut the Cake 🎉</button>
+  </div>
+
+  <audio id="bgMusic" autoplay loop>
+    <source src="New folder/happy_birthday.m4a" type="audio/mp4">
+    <source src="New folder/happy_birthday.mp3" type="audio/mpeg">
+    <source src="New folder/happy_birthday.ogg" type="audio/ogg">
+    
+  </audio>
+  <button onclick="document.getElementById('bgMusic').play()" style="padding: 10px 20px; font-size: 1rem; background-color: #ff4da6; color: white; border: none; border-radius: 5px; cursor: pointer;">
+    🎵 Play Music
+  </button>
+
+  <script>
+    const canvas = document.getElementById("heartCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const hearts = [];
+    const colors = ["#ff4da6", "#ff6f91", "#ff85a1", "#ff99b3"];
+
+    function createHeart() {
+      const x = Math.random() * canvas.width;
+      const y = canvas.height + 20;
+      const size = Math.random() * 10 + 5;
+      const speed = Math.random() * 2 + 1;
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      hearts.push({ x, y, size, speed, color });
+    }
+
+    function drawHearts() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      hearts.forEach((heart, index) => {
+        ctx.fillStyle = heart.color;
+        ctx.beginPath();
+        ctx.moveTo(heart.x, heart.y);
+        ctx.arc(heart.x - heart.size / 2, heart.y - heart.size / 2, heart.size / 2, 0, Math.PI * 2);
+        ctx.arc(heart.x + heart.size / 2, heart.y - heart.size / 2, heart.size / 2, 0, Math.PI * 2);
+        ctx.lineTo(heart.x, heart.y + heart.size);
+        ctx.fill();
+
+        heart.y -= heart.speed;
+        if (heart.y < -20) hearts.splice(index, 1);
+      });
+    }
+
+    setInterval(() => {
+      createHeart();
+      drawHearts();
+    }, 50);
+
+    const images = ["New folder/photo1.jpg", "New folder/photo2.jpg", "New folder/photo3.jpg", "New folder/photo4.jpg", "New folder/photo5.jpg", "New folder/photo6.jpg", "New folder/photo7.jpg", "New folder/photo8.jpg"];
+    let index = 0;
+    const slide = document.getElementById("slide");
+
+    setInterval(() => {
+      index = (index + 1) % images.length;
+      slide.src = images[index];
+    }, 3000);
+
+    document.body.addEventListener("click", () => {
+      document.getElementById("bgMusic").play();
+    });
+
+    function cutCake() {
+      // Redirect to another page
+      window.location.href = "photo.html";
+    }
+  </script>
+</body>
+</html>
